@@ -1,7 +1,47 @@
 #include <iostream>
 #include <syscall.h>
 #include <dirent.h>
+#include <sys/stat.h> 
 using namespace std;
+
+void list(){
+	DIR *dp;
+  	struct dirent *dirp;
+  	dp = opendir(".");
+	if ( dp == NULL)
+	{
+		cout << "error opening current directory" << endl;
+	}
+	else
+	{
+		dirp = readdir(dp);
+		struct stat fileStat;
+		while (dirp != NULL)
+		{
+			stat(dirp->d_name, &fileStat);
+			if (string(dirp->d_name) != "." && string(dirp->d_name) != "..")
+			{
+				if(S_ISDIR(fileStat.st_mode))
+			    	cout << "\t(d) " << dirp->d_name << endl;
+			    else
+					cout << "\t(f) " << dirp->d_name << endl;
+			}
+			dirp = readdir(dp);
+		}
+	}
+	closedir(dp);
+}
+
+//not working
+void down(string str){
+	int index = 0;
+	if(str[1] == ' ')
+		index = 2;
+	else 
+		index = 5;
+	for(int i(index);i<str.size();i++)
+		cout << str[i];
+}
 
 int main(){
 	string inpt = "";
@@ -12,10 +52,11 @@ int main(){
 		cout << "seashell> ";
 		cin >> inpt;
 		if(inpt == "l" || inpt == "list"){
-			cout << "";
+			list();
 		}
-		else if(inpt == "d" || inpt == "down"){
-			cout << "";
+		else if(inpt.substr(0,1) == "d" || inpt.substr(0,4) == "down"){
+			//cout << "Test" << endl;
+			down(inpt);
 		}
 		else if(inpt == "u" || inpt == "up"){
 			chdir("..");
