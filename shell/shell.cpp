@@ -32,15 +32,14 @@ void list(){
 	closedir(dp);
 }
 
-//not working
 void down(string str){
 	int index = 0;
 	if(str[1] == ' ')
 		index = 2;
 	else 
 		index = 5;
-	for(int i(index);i<str.size();i++)
-		cout << str[i];
+
+	chdir(str.substr(index).c_str());
 }
 
 int main(){
@@ -50,12 +49,11 @@ int main(){
 	cout << "Welcome to seashell!" << endl;
 	while (active){
 		cout << "seashell> ";
-		cin >> inpt;
+		getline(cin,inpt);
 		if(inpt == "l" || inpt == "list"){
 			list();
 		}
 		else if(inpt.substr(0,1) == "d" || inpt.substr(0,4) == "down"){
-			//cout << "Test" << endl;
 			down(inpt);
 		}
 		else if(inpt == "u" || inpt == "up"){
