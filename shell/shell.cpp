@@ -1,7 +1,7 @@
 #include <iostream>
 #include <syscall.h>
 #include <dirent.h>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 using namespace std;
 
 void list(){
@@ -39,7 +39,12 @@ void down(string str){
 	else 
 		index = 5;
 
-	chdir(str.substr(index).c_str());
+	struct stat fileStat;
+	stat(str.substr(index).c_str(), &fileStat);
+	if(S_ISDIR(fileStat.st_mode))
+		chdir(str.substr(index).c_str());
+	else
+		cout << str.substr(index) << " is not a directory." << endl;
 }
 
 int main(){
@@ -53,6 +58,8 @@ int main(){
 		if(inpt == "l" || inpt == "list"){
 			list();
 		}
+		else if(inpt == "d" || inpt == "down")
+			cout << "\t(d)own [dir]: moves into the specified child directory" << endl;
 		else if(inpt.substr(0,1) == "d" || inpt.substr(0,4) == "down"){
 			down(inpt);
 		}
