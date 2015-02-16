@@ -70,23 +70,31 @@ int main(){
 		else if(inpt == "w" || inpt == "wai"){
 			cout << get_current_dir_name() << endl;
 		}
-		else if(inpt == "t" || inpt == "trash"){
+		/*else if(inpt == "t" || inpt == "trash"){
 			//delete something
-		}
+		}*/
 		else if(inpt == "e" || inpt == "exit"){
 			cout << "kbye.." << endl;
 			return 0;
 		}
+		else if(inpt == "h" || inpt == "help"){
+			cout << "\t(l)ist: lists contents of current directory" << endl;
+			cout << "\t(d)own [dir]: moves into the specified directory" << endl;
+			cout << "\t(u)p: moves to the parent directory" << endl;
+			cout << "\t(w)ai: prints the current directory" << endl;
+			cout << "\t(t)rash [file]: deletes the specified file" << endl;
+			cout << "\t(e)xit: exits the shell" << endl;
+			cout << "\t(h)elp: prints a list of the supported commands" << endl;
+		}
 		else{
-			if(system(inpt.c_str()) == -1){
-				cout << "\t(l)ist: lists contents of current directory" << endl;
-				cout << "\t(d)own [dir]: moves into the specified directory" << endl;
-				cout << "\t(u)p: moves to the parent directory" << endl;
-				cout << "\t(w)ai: prints the current directory" << endl;
-				cout << "\t(t)rash [file]: deletes the specified file";
-				cout << "\t(e)xit: exits the shell" << endl;
-				cout << "\t(h)elp: prints a list of the supported commands" << endl;
-			}
+			system(inpt.c_str());
+			cout << "\t(l)ist: lists contents of current directory" << endl;
+			cout << "\t(d)own [dir]: moves into the specified directory" << endl;
+			cout << "\t(u)p: moves to the parent directory" << endl;
+			cout << "\t(w)ai: prints the current directory" << endl;
+			cout << "\t(t)rash [file]: deletes the specified file" << endl;
+			cout << "\t(e)xit: exits the shell" << endl;
+			cout << "\t(h)elp: prints a list of the supported commands" << endl;
 		}
 	}
 }
