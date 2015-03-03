@@ -10,10 +10,12 @@ struct point{
 struct setop{
 	int num_points;
 	point ref;
-	point points[];
+	point points[10];
+	point closest;
+	int distance;
 };
 
 double distance(point p1, point p2);
-point closest(setop& set);
+void closest(setop& set);
 
 #endif
