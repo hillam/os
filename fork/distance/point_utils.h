@@ -2,8 +2,8 @@
 #define CLOSEST_POINT_H
 
 struct point{
-	int x;
-	int y;
+	long x;
+	long y;
 };
 
 //set of points

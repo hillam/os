@@ -15,23 +15,23 @@ int forkChild(const int& id);
 
 int main(){
 	// maximum rng value
-	const int max = 1000;
+	const int max = 100;
 	srand(time(NULL));
 
-	point ref = {80,80};
+	point ref = {8,8};
 
 	/*------------------------------------------------------------------------*/
 
 	// init points randomly
 	point all_points[500000];
-	for(int i(0);i<499999;i++){
-		point p = {rand() % max,rand() % max};
+	for(int i(0);i<500000;i++){
+		point p = {(rand() % max)+10,(rand() % max)+10};
 		all_points[i] = p;
 	}
 	// init last (known) point
 	{
-		point p = {8,8};
-		all_points[499999] = p;
+		//point p = {80,80};
+		//all_points[0] = p;
 	}
 	/*------------------------------------------------------------------------*/
 
@@ -51,12 +51,20 @@ int main(){
     // break all_points into subsets, and initialize all 100 pieces of 'data'
     setop subsets[100];
     for(int i(0);i<100;i++){
+    	//cout << i*5000 << " -> " << (i*5000)+5000 << endl;
+
+    	// for subset[i], initialize all points
     	for(int j(i*5000);j<(i*5000)+5000;j++)
     		subsets[i].points[j] = all_points[j];
     	setop values;
 	    values.num_points = 5000;
 	    values.ref = ref;
 	    memcpy(values.points,&subsets[i],sizeof(values.points));
+	    
+	    // does the same as memcpy (effectively)
+	    //for(int j(0);j<5000;j++)
+	    //	values.points[j] = subsets[i].points[j];
+	    
 	    *data[i] = values;
     }
 
@@ -69,8 +77,8 @@ int main(){
 		wait(NULL);
 
 	// print closest 100 points (for debugging)
-    for(int i(0);i<100;i++)
-    	cout << data[i]->closest.x << " " << data[i]->closest.y << endl;
+    //for(int i(0);i<100;i++)
+    //	cout << data[i]->closest.x << " " << data[i]->closest.y << endl;
 
     point close;
     close.x = data[0]->closest.x;
