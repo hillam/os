@@ -7,6 +7,7 @@
 #include <fstream>
 #include <cstring>
 #include <stdlib.h>
+#include <ctime>
 
 using namespace std;
 
@@ -14,21 +15,24 @@ int forkChild(const int& id);
 
 int main(){
 	// maximum rng value
-	const int max = 100;
-	point ref = {50,50};
+	const int max = 1000;
+	srand(time(NULL));
+
+	point ref = {80,80};
 
 	/*------------------------------------------------------------------------*/
 
 	// init points randomly
 	point all_points[500000];
 	for(int i(0);i<499999;i++){
-		all_points[i].x = rand() % max;
-		all_points[i].y = rand() % max;
+		point p = {rand() % max,rand() % max};
+		all_points[i] = p;
 	}
 	// init last (known) point
-	all_points[499999].x = 50;
-	all_points[499999].y = 50;
-
+	{
+		point p = {8,8};
+		all_points[499999] = p;
+	}
 	/*------------------------------------------------------------------------*/
 
 	// size of shared memory seg
