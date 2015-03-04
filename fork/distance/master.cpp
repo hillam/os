@@ -14,8 +14,8 @@ int forkChild(const int& id);
 
 int main(){
 	// maximum rng value
-	const int max = 1000;
-	point ref = {500,500};
+	const int max = 100;
+	point ref = {50,50};
 
 	/*------------------------------------------------------------------------*/
 
@@ -26,8 +26,8 @@ int main(){
 		all_points[i].y = rand() % max;
 	}
 	// init last (known) point
-	all_points[499999].x = 5;
-	all_points[499999].y = 5;
+	all_points[499999].x = 50;
+	all_points[499999].y = 50;
 
 	/*------------------------------------------------------------------------*/
 
@@ -64,8 +64,26 @@ int main(){
 	for(int i(0);i<100;i++)
 		wait(NULL);
 
+	// print closest 100 points (for debugging)
     for(int i(0);i<100;i++)
     	cout << data[i]->closest.x << " " << data[i]->closest.y << endl;
+
+    point close;
+    close.x = data[0]->closest.x;
+    close.y = data[0]->closest.y;
+
+    for(int i(0);i<100;i++){
+    	point p;
+    	p.x = data[i]->closest.x;
+    	p.y = data[i]->closest.y;
+    	if(dist(ref,p) < dist(ref,close)){
+    		close.x = p.x;
+    		close.y = p.y;
+    	}
+    }
+
+    cout << "Closest point to reference point (" << ref.x << "," << ref.y << ") is ";
+	cout << "(" << close.x << "," << close.y << ")" << endl;
 }
 
 int forkChild(const int& id){

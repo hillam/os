@@ -15,7 +15,7 @@ struct setop{
 	double distance;
 };
 
-double distance(point p1, point p2);
+double dist(point p1, point p2);
 void closest(setop& set);
 
 #endif
