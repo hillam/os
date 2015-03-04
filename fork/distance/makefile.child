@@ -16,4 +16,3 @@ build:
     
 clean:
 	rm -f *.zip
-	rm -f *.o

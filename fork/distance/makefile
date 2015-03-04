@@ -7,6 +7,7 @@ zip: build
 build: clean
 
 run:
+	make -f makefile.child
 	./$(PROGRAM).o
 
 zip:
@@ -18,3 +19,4 @@ build:
     
 clean:
 	rm -f *.zip
+	rm -f master
