@@ -10,7 +10,7 @@ struct point{
 struct setop{
 	int num_points;
 	point ref;
-	point points[500000];
+	point points[5000];
 	point closest;
 	double distance;
 };
