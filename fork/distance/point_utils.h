@@ -1,6 +1,9 @@
 #ifndef CLOSEST_POINT_H
 #define CLOSEST_POINT_H
 
+const long TOTAL_POINTS = 500000;
+const int TOTAL_CHILDREN = 100;
+
 struct point{
 	long x;
 	long y;
@@ -10,7 +13,7 @@ struct point{
 struct setop{
 	int num_points;
 	point ref;
-	point points[5000];
+	point points[TOTAL_POINTS/TOTAL_CHILDREN];
 	point closest;
 	double distance;
 };

@@ -24,12 +24,12 @@ int main(int argc, char ** argv){
 	/*------------------------------------------------------------------------*/
 
 	// init points randomly
-	point all_points[500000];
+	point all_points[TOTAL_POINTS];
 	srand(time(NULL));
 
-	cout << "Generating 500,000 random points (max value = " << max << 
-		")...." << endl;
-	for(int i(0);i<500000;i++){
+	cout << "Generating " << TOTAL_POINTS << " random points (max value = " << 
+		max << ")...." << endl;
+	for(int i(0);i<TOTAL_POINTS;i++){
 		point p = {rand() % max,rand() % max};
 		all_points[i] = p;
 	}
@@ -47,9 +47,9 @@ int main(int argc, char ** argv){
 
     // initialize 100 shared memory segs
     cout << "Creating shared memory segments...." << endl;
-    int segment_ids[100];
-    setop* data[100];
-    for(int i(0);i<100;i++){
+    int segment_ids[TOTAL_CHILDREN];
+    setop* data[TOTAL_CHILDREN];
+    for(int i(0);i<TOTAL_CHILDREN;i++){
     	segment_ids[i] = shmget(IPC_PRIVATE, size, S_IRUSR | S_IWUSR);
     	data[i] = (setop*) shmat(segment_ids[i], NULL, 0);
     }
@@ -57,22 +57,23 @@ int main(int argc, char ** argv){
     /*------------------------------------------------------------------------*/
 
     // break all_points into subsets, and initialize all 100 pieces of 'data'
-    setop subsets[100];
+    setop subsets[TOTAL_CHILDREN];
+    int per_child = TOTAL_POINTS/TOTAL_CHILDREN;
     cout << "Populating shared data...." << endl;
-    for(int i(0);i<100;i++){
+    for(int i(0);i<TOTAL_CHILDREN;i++){
     	//cout << i*5000 << " -> " << (i*5000)+5000 << endl;
 
     	// for subset[i], initialize all points]
-    	for(int j(i*5000);j<((i*5000)+5000);j++){
-    		subsets[i].points[j % 5000].x = all_points[j].x;
-    		subsets[i].points[j % 5000].y = all_points[j].y;
+    	for(int j(i*per_child);j<((i*per_child)+per_child);j++){
+    		subsets[i].points[j % per_child].x = all_points[j].x;
+    		subsets[i].points[j % per_child].y = all_points[j].y;
     	}
     	setop values;
-	    values.num_points = 5000;
+	    values.num_points = per_child;
 	    values.ref = ref;
 	    
 	    // use this instead of memcpy
-	    for(int j(0);j<5000;j++)
+	    for(int j(0);j<per_child;j++)
 	    	values.points[j] = subsets[i].points[j];
 	    
 	    *data[i] = values;
@@ -82,29 +83,30 @@ int main(int argc, char ** argv){
 
     // fork children
     cout << "Forking children...." << endl;
-	for(int i(0);i<100;i++)
+	for(int i(0);i<TOTAL_CHILDREN;i++)
 		forkChild(segment_ids[i]);
-	for(int i(0);i<100;i++)
+	for(int i(0);i<TOTAL_CHILDREN;i++)
 		wait(NULL);
 
-	// print closest 100 points (for debugging)
+	// print closest points (for debugging)
 	// pass command line -l
 	if(argc > 1 && argv[1] == string("-l")){
-		cout << "100 closest points returned by 100 children:" << endl << 
-			"x\ty\tdistance" << endl << "---------------------------" << endl;
-		for(int i(0);i<100;i++)
+		cout << TOTAL_CHILDREN << " closest points returned by "<< TOTAL_CHILDREN 
+			<<" children:" << endl << "x\ty\tdistance" << endl << 
+			"---------------------------" << endl;
+		for(int i(0);i<TOTAL_CHILDREN;i++)
 			cout << data[i]->closest.x << "\t" << data[i]->closest.y << 
 				"\t" << data[i]->distance << endl;
 	}
 	else
-		cout << "Use command line option -l to show the 100 closest points." <<
-			endl;
+		cout << "Use command line option -l to show the " << TOTAL_CHILDREN
+			<< " closest points." << endl;
 
     point close;
     close.x = data[0]->closest.x;
     close.y = data[0]->closest.y;
 
-    for(int i(0);i<100;i++){
+    for(int i(0);i<TOTAL_CHILDREN;i++){
     	point p;
     	p.x = data[i]->closest.x;
     	p.y = data[i]->closest.y;
@@ -118,7 +120,7 @@ int main(int argc, char ** argv){
 	cout << "(" << close.x << "," << close.y << ")" << endl;
 
 	// delete/remove shared memory segments.. just incase
-	for(int i(0);i<100;i++)
+	for(int i(0);i<TOTAL_CHILDREN;i++)
 		shmctl(segment_ids[i],IPC_RMID,NULL);
 }
 
