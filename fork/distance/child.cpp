@@ -11,7 +11,5 @@ int main(int argc, char ** argv){
 
 	setop* data = (setop*) shmat(segment_id, NULL, 0);
 
-	point ref = data->ref;
-
 	closest(*data);
 }
