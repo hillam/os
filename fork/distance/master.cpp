@@ -14,17 +14,23 @@ using namespace std;
 int forkChild(const int& id);
 
 int main(int argc, char ** argv){
-	// maximum rng value... keep it tame when testing PLEASE
-	const int max = 200000;
+	// maximum rng value
+	const int max = 20000;
+
 	point ref = {50,50};
+	cout << "Setting reference point at (" << ref.x << "," << ref.y << 
+		")...." << endl;
 
 	/*------------------------------------------------------------------------*/
 
 	// init points randomly
 	point all_points[500000];
 	srand(time(NULL));
+
+	cout << "Generating 500,000 random points (max value = " << max << 
+		")...." << endl;
 	for(int i(0);i<500000;i++){
-		point p = {(rand() % max),(rand() % max)};
+		point p = {rand() % max,rand() % max};
 		all_points[i] = p;
 	}
 
@@ -40,6 +46,7 @@ int main(int argc, char ** argv){
     const int size = sizeof(setop);
 
     // initialize 100 shared memory segs
+    cout << "Creating shared memory segments...." << endl;
     int segment_ids[100];
     setop* data[100];
     for(int i(0);i<100;i++){
@@ -51,10 +58,11 @@ int main(int argc, char ** argv){
 
     // break all_points into subsets, and initialize all 100 pieces of 'data'
     setop subsets[100];
+    cout << "Populating shared data...." << endl;
     for(int i(0);i<100;i++){
     	//cout << i*5000 << " -> " << (i*5000)+5000 << endl;
 
-    	// for subset[i], initialize all points
+    	// for subset[i], initialize all points]
     	for(int j(i*5000);j<((i*5000)+5000);j++){
     		subsets[i].points[j % 5000].x = all_points[j].x;
     		subsets[i].points[j % 5000].y = all_points[j].y;
@@ -73,6 +81,7 @@ int main(int argc, char ** argv){
     /*------------------------------------------------------------------------*/
 
     // fork children
+    cout << "Forking children...." << endl;
 	for(int i(0);i<100;i++)
 		forkChild(segment_ids[i]);
 	for(int i(0);i<100;i++)
@@ -80,10 +89,16 @@ int main(int argc, char ** argv){
 
 	// print closest 100 points (for debugging)
 	// pass command line -l
-	if(argc > 1 && argv[1] == string("-l"))
+	if(argc > 1 && argv[1] == string("-l")){
+		cout << "100 closest points returned by 100 children:" << endl << 
+			"x\ty\tdistance" << endl << "---------------------------" << endl;
 		for(int i(0);i<100;i++)
-			cout << data[i]->closest.x << " " << data[i]->closest.y << 
+			cout << data[i]->closest.x << "\t" << data[i]->closest.y << 
 				"\t" << data[i]->distance << endl;
+	}
+	else
+		cout << "Use command line option -l to show the 100 closest points." <<
+			endl;
 
     point close;
     close.x = data[0]->closest.x;
