@@ -23,7 +23,6 @@ void * calculateCell(void * data){
 	result->m_matrix[cell/result->columns][cell%result->columns] = value;
 }
 
-//dot product......... POSSIBLY not using this..
 Matrix operator*(const Matrix& lhs, const Matrix& rhs){
 	//if inner dimension is not equal, don't allow
 	if(lhs.columns != rhs.rows){

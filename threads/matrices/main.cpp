@@ -2,6 +2,7 @@
 #include "FileReader.h"
 #include "StringFunctions.h"
 #include <iostream>
+#include <stdlib.h>
 #include <vector>
 
 using namespace std;
@@ -11,30 +12,41 @@ int* toArray(string s){
 }
 
 int main(){
-	/*Matrix m1(2,3);
-	int data1[][3] = {{1,2,3},
-					 {4,5,6}};
-	m1.addRow(data1[0]);
-	m1.addRow(data1[1]);
-	cout << m1 << endl;
+	
+	vector<string> temp;
 
-	Matrix m2(3,4);
-	int data2[][4] = {{7,10,13,16},
-					 {8,11,14,17},
-					 {9,12,15,18}};
-	m2.addRow(data2[0]);
-	m2.addRow(data2[1]);
-	m2.addRow(data2[2]);
-
-	cout << m2 << endl;*/
+	cout << "Reading in A.matrix and B.matrix.." << endl;
 
 	FileReader a("A.matrix");
 	vector<string> dim1 = StringFunctions::split(a.readLine()," ");
 	Matrix m1(atoi(dim1[0].c_str()),atoi(dim1[1].c_str()));
+	int a_rows[m1.getRows()][m1.getColumns()];
+
+	for(int i(0);i<m1.getRows();i++){
+		temp = StringFunctions::split(a.readLine(),", ");
+		for(int j(0);j<m1.getColumns();j++){
+			a_rows[i][j] = atoi(temp[j].c_str());
+		}
+		m1.addRow(a_rows[i]);
+	}
 	
 	FileReader b("B.matrix");
-	vector<string> dim2 = StringFunctions::split(a.readLine()," ");
-	Matrix m2(atoi(dim1[0].c_str()),atoi(dim2[1].c_str()));
+	vector<string> dim2 = StringFunctions::split(b.readLine()," ");
+	Matrix m2(atoi(dim2[0].c_str()),atoi(dim2[1].c_str()));
+	int b_rows[m2.getRows()][m2.getColumns()];
 
-	//cout << (m1*m2) << endl;
+	for(int i(0);i<m2.getRows();i++){
+		temp = StringFunctions::split(b.readLine(),", ");
+		for(int j(0);j<m2.getColumns();j++){
+			b_rows[i][j] = atoi(temp[j].c_str());
+		}
+		m2.addRow(b_rows[i]);
+	}
+
+	cout << "Writing C.matrix.." << endl;
+
+	ofstream matrix_file;
+	matrix_file.open("C.matrix");
+	matrix_file << (m1*m2) << endl;
+	matrix_file.close();
 }
