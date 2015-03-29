@@ -1,10 +1,17 @@
 #include "Matrix.h"
+#include "FileReader.h"
+#include "StringFunctions.h"
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
+int* toArray(string s){
+
+}
+
 int main(){
-	Matrix m1(2,3);
+	/*Matrix m1(2,3);
 	int data1[][3] = {{1,2,3},
 					 {4,5,6}};
 	m1.addRow(data1[0]);
@@ -19,10 +26,15 @@ int main(){
 	m2.addRow(data2[1]);
 	m2.addRow(data2[2]);
 
-	cout << m2 << endl;
+	cout << m2 << endl;*/
 
-	//Matrix m3(2,4);
-	//m3 = m1*m2;
+	FileReader a("A.matrix");
+	vector<string> dim1 = StringFunctions::split(a.readLine()," ");
+	Matrix m1(atoi(dim1[0].c_str()),atoi(dim1[1].c_str()));
+	
+	FileReader b("B.matrix");
+	vector<string> dim2 = StringFunctions::split(a.readLine()," ");
+	Matrix m2(atoi(dim1[0].c_str()),atoi(dim2[1].c_str()));
 
-	cout << (m1*m2) << endl;
+	//cout << (m1*m2) << endl;
 }

@@ -1,5 +1,5 @@
 PROGRAM = matrices
-FILES = Matrix.cpp main.cpp
+FILES = main.cpp Matrix.cpp FileReader.cpp StringFunctions.cpp
 
 all: run
 run: zip
