@@ -7,6 +7,7 @@ zip: build
 build: clean
 
 run:
+	./create.o
 	./$(PROGRAM).o
 
 zip:
@@ -15,7 +16,9 @@ zip:
 
 build:
 	g++ -pthread -std=c++11 $(FILES) -o $(PROGRAM).o
+	g++ -std=c++11 create.cpp -o create.o
     
 clean:
 	rm -f *.zip
 	rm -f *.o
+	rm -f *.matrix

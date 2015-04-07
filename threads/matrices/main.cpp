@@ -7,10 +7,6 @@
 
 using namespace std;
 
-int* toArray(string s){
-
-}
-
 int main(){
 	
 	vector<string> temp;
@@ -43,10 +39,14 @@ int main(){
 		m2.addRow(b_rows[i]);
 	}
 
+	cout << "Calculating C.matrix.." << endl;
+
+	Matrix c = (m1*m2);	
+
 	cout << "Writing C.matrix.." << endl;
 
 	ofstream matrix_file;
 	matrix_file.open("C.matrix");
-	matrix_file << (m1*m2) << endl;
+	matrix_file << c << endl;
 	matrix_file.close();
 }

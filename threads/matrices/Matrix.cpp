@@ -41,6 +41,7 @@ Matrix operator*(const Matrix& lhs, const Matrix& rhs){
 	pthread_attr_init(&attr);
 	pthread_t tids[cells];
 	
+
 	int temp_cols[cells][rhs.rows];
 	for(int i(0);i<cells;i++){
 
@@ -49,17 +50,19 @@ Matrix operator*(const Matrix& lhs, const Matrix& rhs){
 		pairs[i].size = lhs.columns;
 		
 		pairs[i].row = lhs.m_matrix[i/rhs.columns];
-		
+
 		for(int j(0);j<rhs.rows;j++){
 			temp_cols[i][j] = rhs.m_matrix[j][i%rhs.columns];
 		}
 		pairs[i].column = temp_cols[i];
 
-		pthread_create(&tids[i],&attr,calculateCell,&pairs[i]);
+		//pthread_create(&tids[i],&attr,calculateCell,&pairs[i]);
+		calculateCell(&pairs[i]);
 	}
 
-	for(int i(0);i<cells;i++)
-		pthread_join(tids[i], NULL);
+	printf("%s\n","test");
+	//for(int i(0);i<cells;i++)
+	//	pthread_join(tids[i], NULL);
 
 	return result;
 }
