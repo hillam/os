@@ -8,16 +8,20 @@
 #include <cstring>
 #include <stdlib.h>
 #include <ctime>
+#include <climits>
+#include <math.h>
+#include <pthread.h>
+#include <cstdint>
 
 using namespace std;
 
-void init_points(point* all_points);
-
 // MAXimum rng value
-const int MAX = 10000;
+const int MAX = 1000;
 
 int main(int argc, char ** argv){
-	point ref = {50,50};
+	srand(time(NULL));
+	
+	point ref = {50,51};
 	cout << "Setting reference point at (" << ref.x << "," << ref.y << 
 		")...." << endl;
 
@@ -25,9 +29,14 @@ int main(int argc, char ** argv){
 
 	// init points randomly
 	point all_points[TOTAL_POINTS];
-	srand(time(NULL));
 
-	init_points(all_points);
+	cout << "Generating " << TOTAL_POINTS << " random points (MAX value = " << 
+		MAX << ")...." << endl;
+	for(int i(0);i < TOTAL_POINTS;i++){
+		point p = {rand() % MAX,rand() % MAX};
+		all_points[i] = p;
+	}
+
 	// assign known point
 	{
 		point p = {ref.x,ref.y};
@@ -38,6 +47,8 @@ int main(int argc, char ** argv){
 
     // break all_points into subsets, and initialize all 100 pieces of 'data'
     setop* data[TOTAL_CHILDREN];
+    for(int i(0);i<TOTAL_CHILDREN;i++)
+    	data[i] = (setop*) new setop();
 
     setop subsets[TOTAL_CHILDREN];
     int per_child = TOTAL_POINTS/TOTAL_CHILDREN;
@@ -61,10 +72,26 @@ int main(int argc, char ** argv){
     		//printf("%d\n",j);
 	    	values.points[j] = subsets[i].points[j];
 	    }
-    	printf("%d\n",i);
+    	//printf("%d\n",i);
 	    *data[i] = values;
-    	printf("test\n");
+    	//printf("test\n");
     }
+
+    /*--------------------------------------------------------------------------
+
+		THREAD STUFF
+
+    --------------------------------------------------------------------------*/
+
+    pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_t tids[per_child];
+
+	for(int i(0);i<per_child;i++)
+		pthread_create(&tids[i],&attr,calcClosest,data[i]);
+	for(int i(0);i<per_child;i++)
+		pthread_join(tids[i], NULL);
+
 
     /*------------------------------------------------------------------------*/
 
@@ -98,13 +125,27 @@ int main(int argc, char ** argv){
 
     cout << "Closest point to reference point (" << ref.x << "," << ref.y << ") is ";
 	cout << "(" << close.x << "," << close.y << ")" << endl;
+
+	for(int i(0);i<TOTAL_CHILDREN;i++)
+    	delete data[i];
 }
 
-void init_points(point* all_points){
-	cout << "Generating " << TOTAL_POINTS << " random points (MAX value = " << 
-		MAX << ")...." << endl;
-	for(int i(0);i < TOTAL_POINTS;i++){
-		point p = {rand() % MAX,rand() % MAX};
-		all_points[i] = p;
+double dist(const point& p1,const point& p2){
+	return sqrt((pow(p1.x-p2.x,2))+(pow(p1.y-p2.y,2)));
+}
+
+void * calcClosest(void* s){
+	setop* set = (setop*) s;
+	set->closest = set->points[0];
+	set->distance = dist(set->ref,set->closest);
+	double d = INT_MAX;
+
+	for(int i(0);i<set->num_points;i++){			
+		d = dist(set->ref,set->points[i]);
+		if(d < set->distance){
+			set->closest.x = set->points[i].x;
+			set->closest.y = set->points[i].y;
+			set->distance = d;
+		}
 	}
 }

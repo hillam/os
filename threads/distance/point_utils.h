@@ -1,7 +1,7 @@
 #ifndef CLOSEST_POINT_H
 #define CLOSEST_POINT_H
 
-const long TOTAL_POINTS = 500000;
+const long TOTAL_POINTS = 5000;
 const int TOTAL_CHILDREN = 100;
 
 struct point{
@@ -19,6 +19,6 @@ struct setop{
 };
 
 double dist(const point& p1, const point& p2);
-void closest(setop& set);
+void * calcClosest(void* s);
 
 #endif

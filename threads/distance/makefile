@@ -1,5 +1,5 @@
 PROGRAM = distance
-FILES = master.cpp point_utils.cpp
+FILES = master.cpp
 
 all: run
 run: zip
@@ -16,7 +16,7 @@ zip:
 build:
 	clear
 	clear
-	g++ $(FILES) -o $(PROGRAM).o
+	g++ -pthread -std=c++11 $(FILES) -o $(PROGRAM).o
     
 clean:
 	rm -f *.zip
