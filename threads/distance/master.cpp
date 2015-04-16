@@ -50,10 +50,10 @@ int main(int argc, char ** argv){
     for(int i(0);i<TOTAL_CHILDREN;i++)
     	data[i] = (setop*) new setop();
 
-    setop subsets[TOTAL_CHILDREN];
     int per_child = TOTAL_POINTS/TOTAL_CHILDREN;
+    setop subsets[TOTAL_CHILDREN];
 
-    cout << "Populating shared data...." << endl;
+    cout << "Breaking data into subsets...." << endl;
     for(int i(0);i<TOTAL_CHILDREN;i++){
     	//cout << i*5000 << " -> " << (i*5000)+5000 << endl;
 
@@ -69,7 +69,6 @@ int main(int argc, char ** argv){
 	    
 	    // use this instead of memcpy
 	    for(int j(0);j<per_child;j++){
-    		//printf("%d\n",j);
 	    	values.points[j] = subsets[i].points[j];
 	    }
     	//printf("%d\n",i);
@@ -85,11 +84,11 @@ int main(int argc, char ** argv){
 
     pthread_attr_t attr;
 	pthread_attr_init(&attr);
-	pthread_t tids[per_child];
+	pthread_t tids[TOTAL_CHILDREN];
 
-	for(int i(0);i<per_child;i++)
+	for(int i(0);i<TOTAL_CHILDREN;i++)
 		pthread_create(&tids[i],&attr,calcClosest,data[i]);
-	for(int i(0);i<per_child;i++)
+	for(int i(0);i<TOTAL_CHILDREN;i++)
 		pthread_join(tids[i], NULL);
 
 

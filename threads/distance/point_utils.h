@@ -1,7 +1,7 @@
 #ifndef CLOSEST_POINT_H
 #define CLOSEST_POINT_H
 
-const long TOTAL_POINTS = 5000;
+const long TOTAL_POINTS = 50000;
 const int TOTAL_CHILDREN = 100;
 
 struct point{
